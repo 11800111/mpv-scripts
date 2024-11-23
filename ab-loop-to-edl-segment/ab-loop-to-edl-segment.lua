@@ -19,14 +19,15 @@
 -- version: 0.1.1
 
 require('mp.options')
+local utils = require 'mp.utils'
 
 local options = {
   output_filename = '',
   default_output_filename = 'edit.edl',
-  write_to_default_output_file = false,
+  write_to_default_output_file = true,
   absolute_path_by_default = false,
   console_message = false,
-  clipboard_command = 'xclip -rmlastnl -selection clipboard',
+  clipboard_command = 'pbcopy',
 }
 
 read_options(options, 'ab_loop_to_edl_segment')
@@ -47,8 +48,9 @@ local function copy_to_clipboard(text)
 end
 
 local function append_to_file(text)
-
-  local output_filename = options.output_filename
+  local dir = utils.split_path(mp.get_property("path"))
+  local name = mp.get_property("filename")
+  local output_filename = utils.join_path(dir, name .. ".edl")
 
   if output_filename == '' then
     if options.write_to_default_output_file == true then
